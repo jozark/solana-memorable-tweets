@@ -19,7 +19,7 @@ export default function InputBar({
         value={inputValue}
         onChange={(event) => setInputValue(event.target.value)}
       />
-      <button type="submit" className="cta-button submit-gif-button">
+      <button type="submit" className="cta-button submit-button">
         Submit
       </button>
       <p className="info-text">

@@ -85,18 +85,18 @@ function App(): JSX.Element {
   };
 
   const getTweetList = async (): Promise<void> => {
+    setLoading(true);
     try {
-      setLoading(true);
       const program = await getProgram();
       const account = await program.account.baseAccount.fetch(
         baseAccount.publicKey
       );
       setTweetList(account.tweetList as Tweet[]);
-      setLoading(false);
     } catch (error) {
       console.error("Could not get tweets");
-      setTweetList([]);
+      setTweetList(null);
     }
+    setLoading(false);
   };
 
   const sendTweet = async (
@@ -157,11 +157,7 @@ function App(): JSX.Element {
 
   return (
     <div className="App">
-      <div
-        className={
-          !(wallet as any).connected ? "authed-container" : "container"
-        }
-      >
+      <div className="container">
         <div className="header-container">
           <div className="header-wallet-btn">
             <WalletMultiButton />

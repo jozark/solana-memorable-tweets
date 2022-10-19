@@ -1,5 +1,9 @@
+html {
+  background-color: #1a202c;
+}
+
 .App {
-  height: 100vh;
+  height: 100%;
   background-color: #1a202c;
   overflow: auto;
   text-align: center;
@@ -23,7 +27,7 @@
   position: relative;
   flex-direction: column;
   justify-content: center;
-  padding: 0 30px 0 30px;
+  padding: 60px 30px 0 30px;
 }
 
 .authed-container {
@@ -71,7 +75,7 @@
   animation: gradient-animation 4s ease infinite;
 }
 
-.submit-gif-button {
+.submit-button {
   background: -webkit-linear-gradient(left, #4e44ce, #35aee2);
   background-size: 200% 200%;
   animation: gradient-animation 4s ease infinite;
@@ -102,10 +106,9 @@
 
 .tweet-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(315px, 1fr));
   grid-gap: 1.5rem;
   margin: 0;
-  padding: 0 2rem;
 }
 
 .connected-container input[type="text"] {
@@ -130,5 +133,5 @@
 .header-wallet-btn {
   position: absolute;
   top: 16px;
-  right: 16px;
+  right: 32px;
 }
