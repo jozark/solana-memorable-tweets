@@ -5,7 +5,13 @@ import {
   isDuplicatePost,
 } from "./services/twitter.service";
 import "./App.css";
-import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
+import {
+  clusterApiUrl,
+  Connection,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  Transaction,
+} from "@solana/web3.js";
 import { Program, AnchorProvider, web3, Idl } from "@project-serum/anchor";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import {
@@ -25,6 +31,7 @@ import kp from "./keypair.json";
 import InputBar from "./components/InputBar/InputBar";
 import { Tweet } from "./interfaces/tweet";
 import TweetGrid from "./components/TweetGrid/TweetGrid";
+import { getBalance } from "./services/web3.service";
 require("@solana/wallet-adapter-react-ui/styles.css");
 
 const wallets = [new PhantomWalletAdapter()];
@@ -47,6 +54,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     if ((wallet as any).connected) {
+      console.log("here");
       getTweetList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -183,6 +191,37 @@ function App(): JSX.Element {
     }
   };
 
+  const onHandleSend = async (toAddress: PublicKey) => {
+    try {
+      const connection = new Connection(endpoint, "processed");
+      const provider = getProvider();
+
+      // if (!fromWallet) throw new WalletNotConnectedError();
+      getBalance(connection, provider.wallet.publicKey, "beforetest");
+      const txn = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: provider.wallet.publicKey,
+          toPubkey: toAddress,
+          lamports: 0.1 * LAMPORTS_PER_SOL,
+        })
+      );
+
+      const signature = await wallet.sendTransaction(txn, connection);
+
+      const latestBlockHash = await connection.getLatestBlockhash();
+
+      await connection.confirmTransaction({
+        blockhash: latestBlockHash.blockhash,
+        lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+        signature: signature,
+      });
+
+      getBalance(connection, provider.wallet.publicKey, "test");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const renderConnectedContainer = () => {
     if (tweetList === null && !loading) {
       return <InitButton onClickHandler={createTweetAccount} />;
@@ -194,7 +233,11 @@ function App(): JSX.Element {
             setInputValue={setInputValue}
             handleSubmit={(event) => sendTweet(event)}
           />
-          <TweetGrid list={tweetList} handleClick={(e) => likeTweet(e)} />
+          <TweetGrid
+            list={tweetList}
+            handleSend={(address) => onHandleSend(address)}
+            handleClick={(tweetLink) => likeTweet(tweetLink)}
+          />
         </div>
       );
     }
