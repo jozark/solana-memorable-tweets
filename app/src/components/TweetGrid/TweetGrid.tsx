@@ -30,6 +30,7 @@ export default function TweetGrid({
           <TwitterTweetEmbed
             onLoad={function noRefCheck() {}}
             tweetId={getTweetIdFromUrl(tweet.tweetLink)}
+            options={{ cards: "hidden" }}
           />
           <div className="upvote-container">
             <button
