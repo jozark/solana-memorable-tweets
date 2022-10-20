@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import InitButton from "./components/InitButton/InitButton";
-import { hasUserLikedBefore } from "./services/twitter.service";
+import {
+  hasUserLikedBefore,
+  isDuplicatePost,
+} from "./services/twitter.service";
 import "./App.css";
 import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
 import { Program, AnchorProvider, web3, Idl } from "@project-serum/anchor";
@@ -110,6 +113,13 @@ function App(): JSX.Element {
       toast.error("Please provide a valid Tweet Link!", {
         position: "bottom-right",
         theme: "colored",
+      });
+      return;
+    }
+
+    if (isDuplicatePost(inputValue, tweetList)) {
+      toast("Duplicate post!", {
+        position: "bottom-right",
       });
       return;
     }

@@ -35,5 +35,25 @@ export const hasUserLikedBefore = (
       }
     });
   });
+
   return hasUserLikedBefore;
+};
+
+export const isDuplicatePost = (
+  url: string,
+  tweetList: Tweet[] | null
+): boolean => {
+  let isDuplicate = false;
+
+  if (!tweetList) {
+    return false;
+  }
+
+  tweetList.forEach((tweet) => {
+    if (tweet.tweetLink === url) {
+      isDuplicate = true;
+    }
+  });
+
+  return isDuplicate;
 };
