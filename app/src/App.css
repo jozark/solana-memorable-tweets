@@ -106,7 +106,7 @@ html {
 
 .tweet-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(315px, 575px));
+  grid-template-columns: repeat(auto-fill, minmax(315px, 1fr));
   grid-gap: 1.5rem;
   justify-content: center;
   margin: 0;

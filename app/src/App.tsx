@@ -237,6 +237,11 @@ function App(): JSX.Element {
         lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
         signature: signature,
       });
+
+      toast(`${tipAmount} SOL sent!`, {
+        position: "bottom-right",
+      });
+      setShowModal(false);
     } catch (error) {
       console.log(error);
     }

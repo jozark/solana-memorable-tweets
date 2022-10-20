@@ -5,6 +5,11 @@
   background-color: rgba(0, 0, 0, 0.25);
 }
 
+.tweet-card > div:first-child {
+  display: flex;
+  justify-content: center;
+}
+
 .upvote-container {
   margin: 0 1rem;
   margin-top: 1rem;
