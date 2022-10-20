@@ -5,16 +5,20 @@ import {
   getTweetIdFromUrl,
   shortenAddress,
 } from "../../services/twitter.service";
+import { getBalance } from "../../services/web3.service";
 import { FaCreditCard, FaMoneyBill, FaThumbsUp } from "react-icons/fa";
+import { PublicKey } from "@solana/web3.js";
 
 type TweetGridProps = {
   list: Tweet[] | null;
   handleClick: (s: string) => void;
+  handleSend: (s: PublicKey) => void;
 };
 
 export default function TweetGrid({
   list,
   handleClick,
+  handleSend,
 }: TweetGridProps): JSX.Element {
   if (!list) {
     return <></>;
@@ -35,14 +39,14 @@ export default function TweetGrid({
               <FaThumbsUp />
               <span>{tweet.likes.length}</span>
             </button>
-            <div className="submitted-container">
-              <span>submitted by: </span>
-              <div className="submitted-wallet">
-                <FaCreditCard />
-                <span title={tweet.userAddress.toString()}>
-                  {shortenAddress(tweet.userAddress.toString())}
-                </span>
-              </div>
+            <div
+              className="submitted-wallet"
+              onClick={() => handleSend(tweet.userAddress)}
+            >
+              <FaCreditCard />
+              <span title={tweet.userAddress.toString()}>
+                {shortenAddress(tweet.userAddress.toString())}
+              </span>
             </div>
           </div>
         </div>
