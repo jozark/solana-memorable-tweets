@@ -117,7 +117,17 @@ function App(): JSX.Element {
       const account = await program.account.baseAccount.fetch(
         baseAccount.publicKey
       );
-      setTweetList(account.tweetList as Tweet[]);
+      const sortedList = (account.tweetList as Tweet[]).sort((a, b) => {
+        if (a.likes.length > b.likes.length) {
+          return -1;
+        }
+        if (a.likes.length < b.likes.length) {
+          return 1;
+        }
+        return 0;
+      });
+
+      setTweetList(sortedList);
     } catch (error) {
       console.error("Could not get tweets");
       setTweetList(null);
