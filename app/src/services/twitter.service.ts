@@ -19,6 +19,7 @@ export const shortenAddress = (address: string): string => {
 
 export const hasUserLikedBefore = (
   wallet: string,
+  tweetUrl: string,
   tweetList: Tweet[] | null
 ): boolean => {
   let hasUserLikedBefore = false;
@@ -28,12 +29,13 @@ export const hasUserLikedBefore = (
   }
 
   tweetList?.forEach((tweet) => {
-    console.log(tweet);
-    tweet.likes.forEach((like) => {
-      if (like.toString() === wallet) {
-        hasUserLikedBefore = true;
-      }
-    });
+    if (tweet.tweetLink === tweetUrl) {
+      tweet.likes.forEach((like) => {
+        if (like.toString() === wallet) {
+          hasUserLikedBefore = true;
+        }
+      });
+    }
   });
 
   return hasUserLikedBefore;

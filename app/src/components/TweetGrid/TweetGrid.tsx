@@ -1,4 +1,3 @@
-import React from "react";
 import "./TweetGrid.css";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 import { Tweet } from "../../interfaces/tweet";

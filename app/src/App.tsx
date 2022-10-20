@@ -147,11 +147,12 @@ function App(): JSX.Element {
     }
   };
 
-  const likeTweet = async (tweet_url: string): Promise<void> => {
+  const likeTweet = async (tweetUrl: string): Promise<void> => {
     try {
       const provider = getProvider();
       const hasUserLikedAlready = hasUserLikedBefore(
         provider.wallet.publicKey.toString(),
+        tweetUrl,
         tweetList
       );
 
@@ -165,7 +166,7 @@ function App(): JSX.Element {
       const program = await getProgram();
 
       await program.methods
-        .likeTweet(tweet_url)
+        .likeTweet(tweetUrl)
         .accounts({
           baseAccount: baseAccount.publicKey,
           user: provider.wallet.publicKey,
