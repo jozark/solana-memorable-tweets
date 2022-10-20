@@ -39,17 +39,14 @@ export default function TweetGrid({
               <FaThumbsUp />
               <span>{tweet.likes.length}</span>
             </button>
-            <div className="submitted-container">
-              <span>submitted by: </span>
-              <div
-                className="submitted-wallet"
-                onClick={() => handleSend(tweet.userAddress)}
-              >
-                <FaCreditCard />
-                <span title={tweet.userAddress.toString()}>
-                  {shortenAddress(tweet.userAddress.toString())}
-                </span>
-              </div>
+            <div
+              className="submitted-wallet"
+              onClick={() => handleSend(tweet.userAddress)}
+            >
+              <FaCreditCard />
+              <span title={tweet.userAddress.toString()}>
+                {shortenAddress(tweet.userAddress.toString())}
+              </span>
             </div>
           </div>
         </div>

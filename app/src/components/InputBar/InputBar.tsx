@@ -1,4 +1,5 @@
 import React from "react";
+import "./InputBar.css";
 
 type InputBarProps = {
   inputValue: string;
@@ -14,6 +15,7 @@ export default function InputBar({
   return (
     <form onSubmit={handleSubmit}>
       <input
+        className="input-bar"
         type="text"
         placeholder="Insert a tweet link!"
         value={inputValue}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import InitButton from "./components/InitButton/InitButton";
 import {
   hasUserLikedBefore,
@@ -19,7 +19,10 @@ import {
   WalletProvider,
   ConnectionProvider,
 } from "@solana/wallet-adapter-react";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import {
+  WalletAdapterNetwork,
+  WalletNotConnectedError,
+} from "@solana/wallet-adapter-base";
 import {
   WalletModalProvider,
   WalletMultiButton,
@@ -31,6 +34,7 @@ import kp from "./keypair.json";
 import InputBar from "./components/InputBar/InputBar";
 import { Tweet } from "./interfaces/tweet";
 import TweetGrid from "./components/TweetGrid/TweetGrid";
+import TipModal from "./components/TipModal/TipModal";
 import { getBalance } from "./services/web3.service";
 require("@solana/wallet-adapter-react-ui/styles.css");
 
@@ -49,6 +53,9 @@ function App(): JSX.Element {
   const [inputValue, setInputValue] = useState<string>("");
   const [tweetList, setTweetList] = useState<Tweet[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [tipAmount, setTipAmount] = useState<number>(0);
+  const [toAddress, setToAddress] = useState<PublicKey | null>(null);
 
   const wallet = useWallet();
 
@@ -59,6 +66,15 @@ function App(): JSX.Element {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
+
+  useEffect(() => {
+    setTipAmount(0);
+  }, [showModal]);
+
+  const openModalAndSetAddress = (address: PublicKey) => {
+    setToAddress(address);
+    setShowModal(!showModal);
+  };
 
   const getProvider = (): AnchorProvider => {
     const connection = new Connection(endpoint, "processed");
@@ -191,18 +207,24 @@ function App(): JSX.Element {
     }
   };
 
-  const onHandleSend = async (toAddress: PublicKey) => {
+  const onHandleSend = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!toAddress) {
+      return;
+    }
+
     try {
       const connection = new Connection(endpoint, "processed");
       const provider = getProvider();
 
-      // if (!fromWallet) throw new WalletNotConnectedError();
-      getBalance(connection, provider.wallet.publicKey, "beforetest");
+      if (!provider.wallet.publicKey) throw new WalletNotConnectedError();
+
       const txn = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: provider.wallet.publicKey,
           toPubkey: toAddress,
-          lamports: 0.1 * LAMPORTS_PER_SOL,
+          lamports: tipAmount * LAMPORTS_PER_SOL,
         })
       );
 
@@ -215,8 +237,6 @@ function App(): JSX.Element {
         lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
         signature: signature,
       });
-
-      getBalance(connection, provider.wallet.publicKey, "test");
     } catch (error) {
       console.log(error);
     }
@@ -235,7 +255,7 @@ function App(): JSX.Element {
           />
           <TweetGrid
             list={tweetList}
-            handleSend={(address) => onHandleSend(address)}
+            handleSend={(address) => openModalAndSetAddress(address)}
             handleClick={(tweetLink) => likeTweet(tweetLink)}
           />
         </div>
@@ -245,6 +265,13 @@ function App(): JSX.Element {
 
   return (
     <div className="App">
+      <TipModal
+        showModal={showModal}
+        setShowModal={(state) => setShowModal(state)}
+        tipAmount={tipAmount}
+        setTipAmount={(number) => setTipAmount(number ?? 0)}
+        handleTipSubmit={(event) => onHandleSend(event)}
+      />
       <div className="container">
         <div className="header-container">
           <div className="header-wallet-btn">
@@ -252,7 +279,8 @@ function App(): JSX.Element {
           </div>
           <p className="header">🏛 Memorable Solana Tweets</p>
           <p className="sub-text">
-            A devnet monument to preserve memorable tweets of Solana community
+            A devnet monument to preserve memorable tweets of the Solana
+            community
           </p>
           {(wallet as any).connected && renderConnectedContainer()}
         </div>
