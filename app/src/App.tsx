@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import InitButton from "./components/InitButton/InitButton";
-import { getTweetIdFromUrl } from "./services/twitter.service";
+import { hasUserLikedBefore } from "./services/twitter.service";
 import "./App.css";
 import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
 import { Program, AnchorProvider, web3, Idl } from "@project-serum/anchor";
@@ -17,7 +17,6 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { TwitterTweetEmbed } from "react-twitter-embed";
 import idl from "./idl.json";
 import kp from "./keypair.json";
 import InputBar from "./components/InputBar/InputBar";
@@ -138,6 +137,41 @@ function App(): JSX.Element {
     }
   };
 
+  const likeTweet = async (tweet_url: string): Promise<void> => {
+    try {
+      const provider = getProvider();
+      const hasUserLikedAlready = hasUserLikedBefore(
+        provider.wallet.publicKey.toString(),
+        tweetList
+      );
+
+      if (hasUserLikedAlready) {
+        toast("You liked that post already!", {
+          position: "bottom-right",
+        });
+        return;
+      }
+
+      const program = await getProgram();
+
+      await program.methods
+        .likeTweet(tweet_url)
+        .accounts({
+          baseAccount: baseAccount.publicKey,
+          user: provider.wallet.publicKey,
+        })
+        .rpc();
+
+      toast("Liked successfully!", {
+        position: "bottom-right",
+      });
+
+      getTweetList();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const renderConnectedContainer = () => {
     if (tweetList === null && !loading) {
       return <InitButton onClickHandler={createTweetAccount} />;
@@ -149,7 +183,7 @@ function App(): JSX.Element {
             setInputValue={setInputValue}
             handleSubmit={(event) => sendTweet(event)}
           />
-          <TweetGrid list={tweetList} />
+          <TweetGrid list={tweetList} handleClick={(e) => likeTweet(e)} />
         </div>
       );
     }

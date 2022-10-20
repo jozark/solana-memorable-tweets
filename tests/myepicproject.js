@@ -40,6 +40,18 @@ const main = async () => {
   account = await program.account.baseAccount.fetch(baseAccount.publicKey);
   console.log("👀 Tweet Count", account.totalTweets.toString());
   console.log("Tweetlist", account.tweetList);
+
+  await program.rpc.likeTweet(
+    "https://twitter.com/art_zilla/status/1371901607810633736",
+    {
+      accounts: {
+        baseAccount: baseAccount.publicKey,
+        user: provider.wallet.publicKey,
+      },
+    }
+  );
+  account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+  console.log("Tweetlist", account.tweetList);
 };
 
 const runMain = async () => {

@@ -27,7 +27,7 @@ html {
   position: relative;
   flex-direction: column;
   justify-content: center;
-  padding: 60px 30px 0 30px;
+  padding: 100px 30px 0 30px;
 }
 
 .authed-container {
@@ -106,8 +106,9 @@ html {
 
 .tweet-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(315px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(315px, 575px));
   grid-gap: 1.5rem;
+  justify-content: center;
   margin: 0;
 }
 

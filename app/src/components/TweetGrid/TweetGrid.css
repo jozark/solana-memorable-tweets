@@ -5,25 +5,9 @@
   background-color: rgba(0, 0, 0, 0.25);
 }
 
-.upvote-button {
-  /* align-self: center; */
-  background: -webkit-linear-gradient(left, #4e44ce, #35aee2);
-  background-size: 200% 200%;
-  animation: gradient-animation 4s ease infinite;
-  margin-top: 6px;
-  margin-left: auto;
-}
-
-.counter {
-  margin-left: auto;
-}
-
-.counter span {
-  margin-left: 8px;
-}
-
 .upvote-container {
   margin: 0 1rem;
+  margin-top: 1rem;
   display: grid;
   grid-auto-flow: column;
   gap: 0.5rem;
@@ -33,9 +17,38 @@
   justify-content: space-between;
 }
 
-.hidden {
-  margin-left: auto;
+.upvote-button {
+  /* align-self: center; */
+  display: flex;
+  align-items: center;
+  background: -webkit-linear-gradient(left, #4e44ce, #35aee2);
+  background-size: 200% 200%;
+  animation: gradient-animation 4s ease infinite;
+  border: 0;
+  width: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.counter span {
+  margin-left: 8px;
+  margin-top: 3px;
+}
+
+.submitted-wallet {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 3px 10px;
   border-radius: 10px;
   background: -webkit-linear-gradient(left, #4e44ce, #35aee2);
+}
+
+.submitted-container {
+  display: grid;
+  gap: 0.25rem;
+  font-weight: normal;
 }

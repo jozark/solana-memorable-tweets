@@ -2,14 +2,21 @@ import React from "react";
 import "./TweetGrid.css";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 import { Tweet } from "../../interfaces/tweet";
-import { getTweetIdFromUrl } from "../../services/twitter.service";
-import { FaThumbsUp } from "react-icons/fa";
+import {
+  getTweetIdFromUrl,
+  shortenAddress,
+} from "../../services/twitter.service";
+import { FaCreditCard, FaMoneyBill, FaThumbsUp } from "react-icons/fa";
 
 type TweetGridProps = {
   list: Tweet[] | null;
+  handleClick: (s: string) => void;
 };
 
-export default function TweetGrid({ list }: TweetGridProps): JSX.Element {
+export default function TweetGrid({
+  list,
+  handleClick,
+}: TweetGridProps): JSX.Element {
   if (!list) {
     return <></>;
   }
@@ -22,14 +29,22 @@ export default function TweetGrid({ list }: TweetGridProps): JSX.Element {
             tweetId={getTweetIdFromUrl(tweet.tweetLink)}
           />
           <div className="upvote-container">
-            <div className="counter">
+            <button
+              className="cta-button upvote-button counter"
+              onClick={() => handleClick(tweet.tweetLink)}
+            >
               <FaThumbsUp />
-              <span>55</span>
+              <span>{tweet.likes.length}</span>
+            </button>
+            <div className="submitted-container">
+              <span>submitted by: </span>
+              <div className="submitted-wallet">
+                <FaCreditCard />
+                <span title={tweet.userAddress.toString()}>
+                  {shortenAddress(tweet.userAddress.toString())}
+                </span>
+              </div>
             </div>
-            <button className="cta-button upvote-button">Upvote</button>
-            <span className="hidden" title="fasresfsa">
-              fas...
-            </span>
           </div>
         </div>
       ))}
